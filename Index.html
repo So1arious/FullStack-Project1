@@ -7,111 +7,111 @@
     <link rel = "stylesheet" href="style.css">
 </head>
 <body>
-    <div class = "app-shell"></div>
-        <aside class = "sidebar">
+<div class = "app-shell"></div>
+<aside class = "sidebar">
+    <div>
+        <p class = "eyebrow">Project Registration</p>
+        <h1>Registration</h1>
+        <p class="sidebar-text">
+            Full-stack dashboard powered by an Express backend.
+        </p>
+    </div>
+
+    <div class="server-card">
+        <div class="server-row">
+            <span id="status-dot" class="status-dot offline"></span>
             <div>
-                <p class = "eyebrow">Project Registration</p>
-                <h1>Registration</h1>
-                <p class="sidebar-text">
-                    Full-stack dashboard powered by an Express backend.
-                </p>
+                <p class="server-label">Backend status</p>
+                <strong id="server-label">Checking...</strong>
             </div>
+        </div>
+        <p id="server-details" class="server-details">
+            Waiting for Express server
+        </p>
+    </div>
+    <button id ="refresh-button" class="outline-button" type="button">
+        Refresh Dashboard
+    </button>
+</aside>
 
-            <div class="server-card">
-                <div class="server-row">
-                    <span id="status-dot" class="status-dot offline"></span>
-                    <div>
-                        <p class="server-label">Backend status</p>
-                        <strong id="server-label">Checking...</strong>
-                    </div>
-                </div>
-                <p id="server-details" class="server-details">
-                        Waiting for Express server
-                </p>
+<main class="main-content">
+    <header class="topbar">
+        <div>
+            <p class="eyebrow">Professional Dashboard</p>
+            <h2>Class Operations Center</h2>
+        </div>
+        <div class="network-tip">
+            Open Developer Tools -> Network
+        </div>
+    </header>
+
+    <section class="stats-grid">
+        <article class="stat-card">
+            <p>Total Register</p>
+            <strong id="\Total-Register">0</strong>
+        </article>
+
+        <article class="stat-card">
+            <p>Completed</p>
+            <strong id="completed-Register">0</strong>
+        </article>
+
+        <article class="stat-card">
+            <p>Pending</p>
+            <strong id="pending-tasks">0</strong>
+        </article>
+    </section>
+
+    <section class="dashboard-grid">
+        <article>
+            <h1>Select your semster</h1>
+            <form>
+                <input type="radio" id= "Fall 2026" name="status">
+                <label for="Fall 2026">Fall2026</label><br>
+                <input type="radio" id= "Winter 2027" name="status">
+                <label for="Winter 2027">Winter2027</label><br>
+                <input type="radio" id= "Spring 2027" name="status">
+                <label for="Spring 2027">Spring2027</label><br>
+                <input type="radio" id= "Fall 2027" name="status">
+                <label for="Fall 2027">Fall2027</label><br>
+            </form>
+
+            <h1>Select Subject</h1>
+            <form action="/action_page.php">
+                <label for="subject">What is your subject:</label>
+                <select id="subject" name="subject">
+                    <option value=" "></option>
+                    <option value="Mathematics">Math</option>
+                    <option value="Writing">Writing</option>
+                    <option value="Biology">Biology</option>
+                    <option value="Chemistry">Chemistry</option>
+                    <option value="Physics">Physics</option>
+                    <option value="Criminal Justice">Criminal Justice</option>
+                    <option value="Philosophy">Philosophy</option>
+                    <option value="Accounting">Accounting</option>
+                    <option value="Business">Business</option>
+                    <option value="Economics">Economics</option>
+                    <option value="Music">Music</option>
+                    <option value="Computer Science">Computer Science</option>
+                </select>
+            </form>
+        </article>
+    </section>
+
+    <section class="panel api-panel">
+        <div class="panel-heading">
+            <div>
+                <p class="eyebrow">Request Monitor</p>
+                <h3>Visible API Activity Log></h3>
             </div>
-            <button id ="refresh-button" class="outline-button" type="button">
-                Refresh Dashboard
+            <button id="clear-log-button" class="small-button" type="button">
+                Clear Log
             </button>
-        </aside>
+        </div>
 
-        <main class="main-content">
-            <header class="topbar">
-                <div>
-                    <p class="eyebrow">Professional Dashboard</p>
-                    <h2>Class Operations Center</h2>
-                </div>
-                <div class="network-tip">
-                    Open Developer Tools -> Network
-                </div>
-            </header>
-
-            <section class="stats-grid">
-                <article class="stat-card">
-                    <p>Total Register</p>
-                    <strong id="\Total-Register">0</strong>
-                </article>
-
-                <article class="stat-card">
-                    <p>Completed</p>
-                    <strong id="completed-Register">0</strong>
-                </article>
-
-                <article class="stat-card">
-                    <p>Pending</p>
-                    <strong id="pending-tasks">0</strong>
-                </article>
-            </section>
-
-            <section class="dashboard-grid">
-                <article>
-                    <h1>Select your semster</h1>
-                    <form>
-                        <input type="radio" id= "Fall 2026" name="status">
-                        <label for="Fall 2026">Fall2026</label><br>
-                        <input type="radio" id= "Winter 2027" name="status">
-                        <label for="Winter 2027">Winter2027</label><br>
-                        <input type="radio" id= "Spring 2027" name="status">
-                        <label for="Spring 2027">Spring2027</label><br>
-                        <input type="radio" id= "Fall 2027" name="status">
-                        <label for="Fall 2027">Fall2027</label><br>
-                    </form>
-
-                    <h1>Select Subject</h1>
-                    <form action="/action_page.php">
-                        <label for="subject">What is your subject:</label>
-                        <select id="subject" name="subject">
-				            <option value=" "></option>	
-                            <option value="Mathematics">Math</option>
-                            <option value="Writing">Writing</option>
-                            <option value="Biology">Biology</option>
-                            <option value="Chemistry">Chemistry</option>
-                            <option value="Physics">Physics</option>
-                            <option value="Criminal Justice">Criminal Justice</option>
-                            <option value="Philosophy">Philosophy</option>
-                            <option value="Accounting">Accounting</option>
-                            <option value="Business">Business</option>
-                            <option value="Economics">Economics</option>
-                            <option value="Music">Music</option>
-                            <option value="Computer Science">Computer Science</option>
-                        </select>
-                    </form>
-                </article>
-            </section>
-
-			<section class="panel api-panel">
-                <div class="panel-heading">
-                    <div>
-                        <p class="eyebrow">Request Monitor</p>
-                        <h3>Visible API Activity Log></h3>
-                    </div>
-                    <button id="clear-log-button" class="small-button" type="button">
-                        Clear Log
-                    </button>
-                </div>
-
-                <div id="api-log" class="api-log"></div>
-            </section>
-        </main>
-    <script src="script.js"></script>
+        <div id="api-log" class="api-log"></div>
+    </section>
+</main>
+<script src="script.js"></script>
 </body>
 </html>
