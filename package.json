@@ -1,0 +1,13 @@
+{
+  "name": "javastack prototype project",
+  "version": "1.0.0",
+  "description": "Professional full-stack study planner dashboard using Express and fetch",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node --watch app.js"
+  },
+  "dependencies": {
+    "express": "^4.22.3"
+  }
+}
