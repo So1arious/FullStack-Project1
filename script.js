@@ -266,4 +266,4 @@ function escapeHtml(value) {
         .replaceAll("'", "&#039;");
 }
 
-refreshDashboard()
+refreshDashboard
