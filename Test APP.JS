@@ -1,9 +1,11 @@
 const express = require("express");
 const path = require("path");
 const app = express();
+//PORT number for the server
 const PORT = 3004;
-
+// Allows Express to read JSON data
 app.use(express.json());
+// Starting study tacks
 app.use(express.static(path.join(__dirname, "public")));
 
 let studyTasks = [
@@ -11,7 +13,6 @@ let studyTasks = [
         id: 1,
         subject: "Mathematics",
         topic: "Matrix Algebra",
-        studyDate: "2026-07-12",
         duration: 60,
         priority: "High",
         completed: false
@@ -20,110 +21,127 @@ let studyTasks = [
         id: 2,
         subject: "JavaScript",
         topic: "Fetch API",
-        studyDate: "2026-07-13",
         duration: 45,
         priority: "Medium",
         completed: true
     }
 ];
 
-let nextTaskId = 3;
+let nextTaskId=3;
 
+// This function calculates statistics about the study tasks
 function buildStatistics() {
-    const totalTasks = studyTasks.length;
-    const completedTasks = studyTasks.filter(task => task.completed).length;
-    const pendingTasks = totalTasks - completedTasks;
-    const totalMinutes = studyTasks.reduce((sum, task) => sum + Number(task.duration), 0);
-
+    const totalTasks =studyTasks.length;
+    const completedTask =studyTasks.filter(
+        task => task.completed
+    ).length;
+    const pendingTasks = totalTasks - completedTask;
+    ;
     return {
         totalTasks,
-        completedTasks,
+        completedTask,
         pendingTasks,
-        totalMinutes
-    };
-}
-
+    };}
+// Check whether the server is running
 app.get("/api/status", function (request, response) {
     response.json({
         status: "online",
         server: "Express",
         port: PORT,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString() //International Standard organization for data and time formatting
     });
 });
 
+// Get study statistics
 app.get("/api/statistics", function (request, response) {
-    response.json(buildStatistics());
+    response.json(buildStatistics())
 });
-
+// Get all study tasks
 app.get("/api/tasks", function (request, response) {
     response.json(studyTasks);
-});
-
+})
+// Add a new study task
 app.post("/api/tasks", function (request, response) {
-    const { subject, topic, studyDate, duration, priority } = request.body;
-
-    if (!subject || !topic || !studyDate || !duration || !priority) {
-        return response.status(400).json({ message: "Every field is required." });
+    const {
+        subject,
+        topic,
+        duration,
+        priority
+    } = request.body;
+// Make sure all fields have been entered
+    if (
+        ! subject ||
+        ! topic ||
+        ! duration ||
+        ! priority
+    ) {
+        return response.status(400).json({
+            message: "Every field is required."
+        });
     }
-
+// Convert duration to a number
     const numericDuration = Number(duration);
-    if (Number.isNaN(numericDuration) || numericDuration <= 0) {
-        return response.status(400).json({ message: "Duration must be a positive number." });
-    }
-
+// Check that duration is valid
+    if (
+        Number.isNaN(numericDuration) ||
+        numericDuration <= 0
+    ) {
+        return response.status(400).json({
+            message: "Duration must be a positive number."
+        });}
+// Create the newTask = {
     const newTask = {
         id: nextTaskId++,
         subject: subject.trim(),
         topic: topic.trim(),
-        studyDate: studyDate,
         duration: numericDuration,
         priority: priority,
-        completed: false
-    };
-
+        completed: false };
+// Add the task to the array
     studyTasks.push(newTask);
-
     response.status(201).json({
         message: "Task created successfully.",
         task: newTask,
-        statistics: buildStatistics()
-    });
+        statistics: buildStatistics()});
 });
-
-app.patch("/api/task/:id", function (request, response) {
+// Change a task from pending to completed
+// or from completed back to pending
+app.patch("/api/tasks/:id", function (request, response){
     const taskId = Number(request.params.id);
-    const task = studyTasks.find(item => item.id === taskId);
-
-    if (!task) {
-        return response.status(404).json({ message: "Study task not found." });
-    }
-
+    const task = studyTasks.find(
+        item => item.id === taskId);
+    if(!task) {
+        return response.status(404).json({
+            message: "Study task not found."
+        });}
     task.completed = !task.completed;
-
     response.json({
         message: "Task status updated.",
         task: task,
         statistics: buildStatistics()
     });
 });
-
-app.delete("/api/task/:id", function (request, response) {
+// Delete one task
+app.delete("/api/tasks/:id", function (request, response) {
     const taskId = Number(request.params.id);
-    const taskExists = studyTasks.some(task => task.id === taskId);
-
+    const taskExists = studyTasks.some(
+        task => task.id === taskId
+    );
     if (!taskExists) {
-        return response.status(404).json({ message: "Study task not found." });
+        return response.status(404).json({
+            message: "Study task not found."
+        });
     }
 
-    studyTasks = studyTasks.filter(task => task.id !== taskId);
-
+    //studyTasks = studyTasks.filter(
+    //    task => task.id !== taskId
+    //);
     response.json({
         message: "Task deleted.",
         statistics: buildStatistics()
     });
 });
-
+// Delete all tasks
 app.delete("/api/tasks", function (request, response) {
     studyTasks = [];
     response.json({
@@ -131,12 +149,15 @@ app.delete("/api/tasks", function (request, response) {
         statistics: buildStatistics()
     });
 });
-
+// Handles unexpected server errors
 app.use(function (error, request, response, next) {
     console.error(error);
-    response.status(500).json({ message: "An unexpected server error occurred." });
+    response.status(500).json({
+        message: "An unexpected server error occurred."});
 });
-
+// Start the server
 app.listen(PORT, function () {
-    console.log(`Server is running at http://localhost:${PORT}`);
+    console.log(
+        `Class Register is running at http://localhost:${PORT}`
+    );
 });
