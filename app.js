@@ -1,163 +1,145 @@
 const express = require("express");
 const path = require("path");
 const app = express();
-//PORT number for the server
 const PORT = 3004;
-// Allows Express to read JSON data
+
 app.use(express.json());
-// Starting study tacks
 app.use(express.static(path.join(__dirname, "public")));
 
-let studyTasks = [
+let RegClasses= [
     {
         id: 1,
+        semester: "Fall 2026",
         subject: "Mathematics",
-        topic: "Matrix Algebra",
-        duration: 60,
-        priority: "High",
-        completed: false
+        topic: "Algebra",
+        date: "Tuesday 11:00-12:50pm & Thursday 11:00-12:50pm",
+        completed: true,
     },
     {
         id: 2,
-        subject: "JavaScript",
-        topic: "Fetch API",
-        duration: 45,
-        priority: "Medium",
-        completed: true
+        semester: "Fall 2026",
+        subject: "Writing",
+        topic: "Creative Writing",
+        dates: "Monday 11:00-12:50pm & Wednesday 11:00-12:50pm",
+        completed: false,
     }
 ];
+let nextClassesId =3
 
-let nextTaskId=3;
-
-// This function calculates statistics about the study tasks
 function buildStatistics() {
-    const totalTasks =studyTasks.length;
-    const completedTask =studyTasks.filter(
-        task => task.completed
-    ).length;
-    const pendingTasks = totalTasks - completedTask;
-    ;
+    const totalClass = RegClasses.length; //totalTasks to totalClass
+    const addedClass = RegClasses.filter((item) => item.completed).length; //Change completedTasks to addedClass
+    const pendingClass = totalClass - addedClass; //Change pendingTasks to pendingClass
+    // const totalMinutes = tasks.reduce((sum, task) => sum + task.minutes, 0);
+
     return {
-        totalTasks,
-        completedTask,
-        pendingTasks,
-    };}
-// Check whether the server is running
-app.get("/api/status", function (request, response) {
+        totalClass,
+        addedClass,
+        pendingClass,
+
+    };
+}
+
+// Check server
+app.get("/api/status", (request, response) => {
     response.json({
         status: "online",
-        server: "Express",
+        server: "Express Registration API",
         port: PORT,
-        timestamp: new Date().toISOString() //International Standard organization for data and time formatting
+        timestamp: new Date().toISOString()
     });
 });
 
-// Get study statistics
-app.get("/api/statistics", function (request, response) {
-    response.json(buildStatistics())
+// Get register statistics
+app.get("/api/statistics", (request, response) => {
+    response.json(buildStatistics());
 });
-// Get all study tasks
-app.get("/api/tasks", function (request, response) {
-    response.json(studyTasks);
-})
-// Add a new study task
-app.post("/api/tasks", function (request, response) {
+
+// Get all register classes
+app.get("/api/register", (request, response) => {
+    response.json(RegClasses);
+});
+
+// Add a new register class
+app.post("/api/register", (request, response) => {
     const {
+        semester,
         subject,
         topic,
-        duration,
-        priority
+        dates
     } = request.body;
-// Make sure all fields have been entered
-    if (
-        ! subject ||
-        ! topic ||
-        ! duration ||
-        ! priority
+
+    if (!semester ||
+        !subject ||
+        !topic ||
+        !dates
     ) {
         return response.status(400).json({
-            message: "Every field is required."
+            message: "invalid register semester, subject, topic or, dates."
         });
     }
-// Convert duration to a number
-    const numericDuration = Number(duration);
-// Check that duration is valid
-    if (
-        Number.isNaN(numericDuration) ||
-        numericDuration <= 0
-    ) {
-        return response.status(400).json({
-            message: "Duration must be a positive number."
-        });}
-// Create the newTask = {
+// Create new task
     const newTask = {
-        id: nextTaskId++,
+        id: nextClassesId++,
+        semester: semester.trim(),
         subject: subject.trim(),
         topic: topic.trim(),
-        duration: numericDuration,
-        priority: priority,
-        completed: false };
-// Add the task to the array
-    studyTasks.push(newTask);
+        dates: dates,
+        completed: false,
+    };
+
+    RegClasses.push(newTask);
     response.status(201).json({
-        message: "Task created successfully.",
-        task: newTask,
-        statistics: buildStatistics()});
-});
-// Change a task from pending to completed
-// or from completed back to pending
-app.patch("/api/tasks/:id", function (request, response){
-    const taskId = Number(request.params.id);
-    const task = studyTasks.find(
-        item => item.id === taskId);
-    if(!task) {
-        return response.status(404).json({
-            message: "Study task not found."
-        });}
-    task.completed = !task.completed;
-    response.json({
-        message: "Task status updated.",
-        task: task,
+        message: "Class Register Successful",
+        registers: newTask,
         statistics: buildStatistics()
     });
 });
-// Delete one task
-app.delete("/api/tasks/:id", function (request, response) {
-    const taskId = Number(request.params.id);
-    const taskExists = studyTasks.some(
-        task => task.id === taskId
-    );
-    if (!taskExists) {
-        return response.status(404).json({
-            message: "Study task not found."
-        });
+
+// Toggle complete status
+app.patch("/api/register/:id/toggle", (request, response) => {
+    const classId = Number(request.params.id);
+    const targetClass = RegClasses.find((item) => item.id === classId);
+
+    if (!targetClass) {
+        return response.status(404).json({ message: "Class not found." });
     }
 
-    //studyTasks = studyTasks.filter(
-    //    task => task.id !== taskId
-    //);
-    response.json({
-        message: "Task deleted.",
-        statistics: buildStatistics()
-    });
+    targetClass.completed = !targetClass.completed;
+    response.json(register);
 });
-// Delete all tasks
-app.delete("/api/tasks", function (request, response) {
-    studyTasks = [];
-    response.json({
-        message: "All tasks deleted.",
-        statistics: buildStatistics()
-    });
+
+// Delete a register class
+app.delete("/api/register/:id", (request, response) => {
+    const classId = Number(request.params.id);
+    const initialLength = RegClasses.length;
+
+    RegClasses = RegClasses.filter((item) => item.id !== classId);
+
+    if (RegClasses.length === initialLength) {
+        return response.status(404).json({ message: "Class not found." });
+    }
+
+    response.json({ message: "Task deleted successfully.", id: taskId });
 });
-// Handles unexpected server errors
-app.use(function (error, request, response, next) {
-    console.error(error);
-    response.status(500).json({
-        message: "An unexpected server error occurred."});
+
+// Reset log
+app.post("/api/register/clear", (request, response) => {
+    RegClasses = [];
+    response.json({ message: "All cleared." });
 });
-// Start the server
-app.listen(PORT, function () {
-    console.log(
-        `Class Register is running at http://localhost:${PORT}`
-    );
+
+// 404 handler for unknown API routes
+app.use("/api/*", (request, response) => {
+    response.status(404).json({ message: "API endpoint not found." });
+});
+
+// Global error handling middleware
+app.use((error, request, response, next) => {
+    console.error("Unhandled error:", error);
+    response.status(500).json({ message: "Internal server error." });
+});
+
+app.listen(PORT, () => {
+    console.log(`registration dashboard is running at http://localhost:${PORT}`);
 });
