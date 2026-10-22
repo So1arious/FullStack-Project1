@@ -1,14 +1,15 @@
 const classForm = document.getElementById("class-form");
-const taskList = document.getElementById("task-List");
+const classList = document.getElementById("class-List"); //change taskList to classList
 const message = document.getElementById("message");
+
 const clearButton = document.getElementById("clear-button");
 const refreshButton = document.getElementById("refresh-button");
 const clearLogButton = document.getElementById("clear-log-button");
 const apiLog = document.getElementById("api-log");
 
-const totalTask = document.getElementById("Total-Register");
-const completedTasks = document.getElementById("completed-Register");
-const pendingTasks = document.getElementById("pending-tasks");
+const totalClass = document.getElementById("total-class"); //change totalTask to totalClass
+const addedTasks = document.getElementById("added-class"); //change completedTask to addedClass
+const pendingClass = document.getElementById("pending-class"); //change pendingTask to pendingClass
 
 const serverStatus = document.getElementById("server-label");
 const serverDetails = document.getElementById("server-details");
@@ -266,4 +267,4 @@ function escapeHtml(value) {
         .replaceAll("'", "&#039;");
 }
 
-refreshDashboard
+refreshDashboard();
