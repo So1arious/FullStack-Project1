@@ -1,11 +1,14 @@
 {
-  "name": "javastack prototype project",
+  "name": "course-registration",
   "version": "1.0.0",
-  "description": "Professional full-stack study planner dashboard using Express and fetch",
-  "main": "app.js",
+  "private": true,
+  "description": "A simple course registration web app with a five-course limit.",
+  "main": "apps.js",
+  "engines": {
+    "node": ">=26.2.2"
+  },
   "scripts": {
-    "start": "node app.js",
-    "dev": "node --watch app.js"
+    "start": "node apps.js"
   },
   "dependencies": {
     "express": "^4.22.3"
