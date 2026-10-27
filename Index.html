@@ -1,117 +1,156 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name = "viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Class Registration </title>
-    <link rel = "stylesheet" href="style.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f7fb">
+    <title>Course registration</title>
+    <link rel="stylesheet" href="/style.css">
+    <script src="/script.js" defer></script>
 </head>
 <body>
-<div class = "app-shell"></div>
-<aside class = "sidebar">
-    <div>
-        <p class = "eyebrow">Project Registration</p>
-        <h1>Registration</h1>
-        <p class="sidebar-text">
-            Full-stack dashboard powered by an Express backend.
-        </p>
-    </div>
-
-    <div class="server-card">
-        <div class="server-row">
-            <span id="status-dot" class="status-dot offline"></span>
-            <div>
-                <p class="server-label">Backend status</p>
-                <strong id="server-label">Checking...</strong>
-            </div>
-        </div>
-        <p id="server-details" class="server-details">
-            Waiting for Express server
-        </p>
-    </div>
-    <button id ="refresh-button" class="outline-button" type="button">
-        Refresh Dashboard
-    </button>
-</aside>
-
-<main class="main-content">
-    <header class="topbar">
-        <div>
-            <p class="eyebrow">Professional Dashboard</p>
-            <h2>Class Operations Center</h2>
-        </div>
-        <div class="network-tip">
-            Open Developer Tools -> Network
-        </div>
+<main class="page-shell">
+    <header class="page-header">
+        <a class="brand" href="/" aria-label="Rutgers Newark Universty home">
+            <span class="brand-mark" aria-hidden="true">R</span>
+            <span>Rutgers Newark <span class="brand-light">University</span></span>
+        </a>
+        <span class="term-label">FALL 2026 · REGISTRATION</span>
     </header>
 
-    <section class="stats-grid">
-        <article class="stat-card">
-            <p>Total Register</p>
-            <strong id="\Total-Register">0</strong>
-        </article>
-
-        <article class="stat-card">
-            <p>Completed</p>
-            <strong id="completed-Register">0</strong>
-        </article>
-
-        <article class="stat-card">
-            <p>Pending</p>
-            <strong id="pending-tasks">0</strong>
-        </article>
+    <section class="intro" aria-labelledby="page-title">
+        <p class="eyebrow">YOUR ACADEMIC PLAN</p>
+        <h1 id="page-title">Build your semester.</h1>
+        <p class="intro-copy">Choose the courses you want to take this term. You can register for up to five courses.</p>
     </section>
 
-    <section class="dashboard-grid">
-        <article>
-            <h1>Select your semster</h1>
-            <form>
-                <input type="radio" id= "Fall 2026" name="status">
-                <label for="Fall 2026">Fall2026</label><br>
-                <input type="radio" id= "Winter 2027" name="status">
-                <label for="Winter 2027">Winter2027</label><br>
-                <input type="radio" id= "Spring 2027" name="status">
-                <label for="Spring 2027">Spring2027</label><br>
-                <input type="radio" id= "Fall 2027" name="status">
-                <label for="Fall 2027">Fall2027</label><br>
-            </form>
-
-            <h1>Select Subject</h1>
-            <form action="/action_page.php">
-                <label for="subject">What is your subject:</label>
-                <select id="subject" name="subject">
-                    <option value=" "></option>
-                    <option value="Mathematics">Math</option>
-                    <option value="Writing">Writing</option>
-                    <option value="Biology">Biology</option>
-                    <option value="Chemistry">Chemistry</option>
-                    <option value="Physics">Physics</option>
-                    <option value="Criminal Justice">Criminal Justice</option>
-                    <option value="Philosophy">Philosophy</option>
-                    <option value="Accounting">Accounting</option>
-                    <option value="Business">Business</option>
-                    <option value="Economics">Economics</option>
-                    <option value="Music">Music</option>
-                    <option value="Computer Science">Computer Science</option>
-                </select>
-            </form>
-        </article>
-    </section>
-
-    <section class="panel api-panel">
-        <div class="panel-heading">
-            <div>
-                <p class="eyebrow">Request Monitor</p>
-                <h3>Visible API Activity Log></h3>
+    <div class="registration-layout">
+        <section class="panel course-picker" aria-labelledby="catalog-title">
+            <div class="panel-heading">
+                <div>
+                    <p class="eyebrow">COURSE CATALOG</p>
+                    <h2 id="catalog-title">Find a course</h2>
+                </div>
+                <span class="catalog-count">8 COURSES</span>
             </div>
-            <button id="clear-log-button" class="small-button" type="button">
-                Clear Log
-            </button>
-        </div>
 
-        <div id="api-log" class="api-log"></div>
-    </section>
+            <form id="course-form">
+                <label for="course-select">Available courses</label>
+                <div class="select-row">
+                    <select id="course-select" name="course" required>
+                        <option value="">Choose a course</option>
+                    </select>
+                    <button class="button button-primary" id="add-course" type="submit">Add course</button>
+                </div>
+            </form>
+
+            <div class="catalog-list" aria-label="Course catalog">
+                <article class="catalog-item">
+                    <span class="course-code">CS 101</span>
+                    <span class="course-name">Introduction to Computer Science</span>
+                    <span class="course-credits">3 credits</span>
+                </article>
+                <article class = "catalog-item">
+                    <span class ="course-code">CS 298</span>
+                    <span class ="course-name">Intro to Full Stack</span>
+                    <span class ="course-credits">3 credits</span>
+                </article>
+                <article class = "catalog-item">
+                    <span class ="course-code">CS 300</span>
+                    <span class ="course-name">Intensive Programming</span>
+                    <span class ="course-credits">3 credits</span>
+                </article>
+                <article class="catalog-item">
+                    <span class="course-code">MATH 101</span>
+                    <span class="course-name">Calculus I</span>
+                    <span class="course-credits">4 credits</span>
+                </article>
+                <article class="catalog-item">
+                    <span class="course-code">MATH 201</span>
+                    <span class="course-name">Calculus II</span>
+                    <span class="course-credits">4 credits</span>
+                </article>
+                <article class="catalog-item">
+                    <span class="course-code">MATH 301</span>
+                    <span class="course-name">Calculus III</span>
+                    <span class="course-credits">4 credits</span>
+                </article>
+                <article class="catalog-item">
+                    <span class="course-code">ENG 110</span>
+                    <span class="course-name">Writing and Rhetoric</span>
+                    <span class="course-credits">3 credits</span>
+                </article>
+                <article class="catalog-item">
+                    <span class="course-code">BIO 150</span>
+                    <span class="course-name">Principles of Biology</span>
+                    <span class="course-credits">4 credits</span>
+                </article>
+                <article class="catalog-item">
+                    <span class="course-code">HIST 220</span>
+                    <span class="course-name">World History</span>
+                    <span class="course-credits">3 credits</span>
+                </article>
+                <article class="catalog-item">
+                    <span class="course-code">PSY 101</span>
+                    <span class="course-name">Introduction to Psychology</span>
+                    <span class="course-credits">3 credits</span>
+                </article>
+                <article class="catalog-item">
+                    <span class="course-code">ART 105</span>
+                    <span class="course-name">Foundations of Design</span>
+                    <span class="course-credits">2 credits</span>
+                </article>
+                <article class="catalog-item">
+                    <span class="course-code">ECON 202</span>
+                    <span class="course-name">Principles of Economics</span>
+                    <span class="course-credits">3 credits</span>
+                </article>
+                <article class="catalog-item">
+                    <span class="course-code">MUS 101</span>
+                    <span class="course-name">Music Theory I</span>
+                    <span class="course-credits">3 credits</span>
+                </article>
+                <article class="catalog-item">
+                    <span class="course-code">MUS 201</span>
+                    <span class="course-name">Music Theory II</span>
+                    <span class="course-credits">3 credits</span>
+                </article>
+            </div>
+        </section>
+
+        <section class="panel schedule-panel" aria-labelledby="schedule-title">
+            <div class="panel-heading">
+                <div>
+                    <p class="eyebrow">FALL 2026</p>
+                    <h2 id="schedule-title">Your schedule</h2>
+                </div>
+                <span class="course-counter" id="course-counter">0 / 5</span>
+            </div>
+
+            <div class="progress-track" aria-hidden="true">
+                <span class="progress-fill" id="progress-fill"></span>
+            </div>
+            <p class="helper-text" id="schedule-summary">You can add up to 5 courses.</p>
+            <p class="status-message" id="status-message" role="status" aria-live="polite"></p>
+
+            <ul class="selected-courses" id="selected-courses" aria-label="Selected courses"></ul>
+            <div class="empty-state" id="empty-state">
+                <span class="empty-icon" aria-hidden="true">＋</span>
+                <p class="empty-title">Your schedule is waiting</p>
+                <p>Add a course from the catalog to get started.</p>
+            </div>
+
+            <div class="schedule-footer">
+                <span>Total credits</span>
+                <strong id="total-credits">0 credits</strong>
+            </div>
+        </section>
+    </div>
+
+    <footer class="page-footer">
+        <span>Need help? Contact the Registrar's Office.</span>
+        <span>Course selections are not final until submitted.</span>
+    </footer>
 </main>
-<script src="script.js"></script>
 </body>
 </html>
