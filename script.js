@@ -1,270 +1,115 @@
-const classForm = document.getElementById("class-form");
-const classList = document.getElementById("class-List"); //change taskList to classList
-const message = document.getElementById("message");
+const courses = [
+    { code: "CS 101", title: "Introduction to Computer Science", credits: 3 },
+    { code: "CS 298", title: "Intro to Full Stack", credits: 3},
+    { code : "CS 300", title: "Intensive Programming", credits: 3},
+    { code : "MATH 101",title: "Calculus I", credits: 4 },
+    { code: "MATH 201", title: "Calculus II", credits: 4 },
+    { code: "MATH 301", title: "Calculus III", credits: 4},
+    { code: "ENG 110", title: "Writing and Rhetoric", credits: 3 },
+    { code: "BIO 150", title: "Principles of Biology", credits: 4 },
+    { code: "HIST 220", title: "World History", credits: 3 },
+    { code: "PSY 101", title: "Introduction to Psychology", credits: 3 },
+    { code: "ART 105", title: "Foundations of Design", credits: 2 },
+    { code: "ECON 202", title: "Principles of Economics", credits: 3 },
+    { code: "MUS 101", title: "Music Theory I", credits: 3},
+    { code: "MUS 201", title: "Music Theory II", credits: 3}
+];
 
-const clearButton = document.getElementById("clear-button");
-const refreshButton = document.getElementById("refresh-button");
-const clearLogButton = document.getElementById("clear-log-button");
-const apiLog = document.getElementById("api-log");
+const maxCourses = 5;
+const selectedCourses = [];
+const form = document.querySelector("#course-form");
+const courseSelect = document.querySelector("#course-select");
+const addButton = document.querySelector("#add-course");
+const selectedList = document.querySelector("#selected-courses");
+const counter = document.querySelector("#course-counter");
+const progressFill = document.querySelector("#progress-fill");
+const summary = document.querySelector("#schedule-summary");
+const statusMessage = document.querySelector("#status-message");
+const emptyState = document.querySelector("#empty-state");
+const totalCredits = document.querySelector("#total-credits");
 
-const totalClass = document.getElementById("total-class"); //change totalTask to totalClass
-const addedTasks = document.getElementById("added-class"); //change completedTask to addedClass
-const pendingClass = document.getElementById("pending-class"); //change pendingTask to pendingClass
+function render() {
+    const selectedCodes = new Set(selectedCourses.map((course) => course.code));
+    const availableCourses = courses.filter((course) => !selectedCodes.has(course.code));
+    const count = selectedCourses.length;
+    const atCapacity = count >= maxCourses;
 
-const serverStatus = document.getElementById("server-label");
-const serverDetails = document.getElementById("server-details");
-const statusDot = document.getElementById("status-dot");
+    courseSelect.replaceChildren(new Option("Choose a course", ""));
+    availableCourses.forEach((course) => {
+        courseSelect.add(new Option(`${course.code} — ${course.title} (${course.credits} credits)`, course.code));
+    });
 
-classForm.addEventListener("submit", async function (event) {
+    courseSelect.disabled = atCapacity || availableCourses.length === 0;
+    addButton.disabled = courseSelect.disabled;
+    counter.textContent = `${count} / ${maxCourses}`;
+    progressFill.style.width = `${(count / maxCourses) * 100}%`;
+    progressFill.parentElement.setAttribute("aria-label", `${count} of ${maxCourses} courses selected`);
+    summary.textContent = atCapacity
+        ? "Your schedule has reached the five-course limit."
+        : `${maxCourses - count} ${maxCourses - count === 1 ? "course" : "courses"} remaining`;
+    emptyState.hidden = count > 0;
+    selectedList.replaceChildren();
+
+    selectedCourses.forEach((course) => {
+        const item = document.createElement("li");
+        item.className = "selected-course";
+
+        const details = document.createElement("div");
+        details.className = "selected-course-details";
+        const code = document.createElement("span");
+        code.className = "course-code";
+        code.textContent = course.code;
+        const title = document.createElement("span");
+        title.className = "selected-course-title";
+        title.textContent = course.title;
+        details.append(code, title);
+
+        const credits = document.createElement("span");
+        credits.className = "selected-course-credits";
+        credits.textContent = `${course.credits} credits`;
+
+        const removeButton = document.createElement("button");
+        removeButton.className = "remove-button";
+        removeButton.type = "button";
+        removeButton.textContent = "Remove";
+        removeButton.setAttribute("aria-label", `Remove ${course.code}`);
+        removeButton.addEventListener("click", () => removeCourse(course.code));
+
+        item.append(details, credits, removeButton);
+        selectedList.append(item);
+    });
+
+    const credits = selectedCourses.reduce((sum, course) => sum + course.credits, 0);
+    totalCredits.textContent = `${credits} ${credits === 1 ? "credit" : "credits"}`;
+}
+
+function removeCourse(code) {
+    const index = selectedCourses.findIndex((course) => course.code === code);
+    if (index !== -1) {
+        selectedCourses.splice(index, 1);
+        statusMessage.textContent = `${code} removed from your schedule.`;
+        render();
+    }
+}
+
+form.addEventListener("submit", (event) => {
     event.preventDefault();
-    const newTask = {
-        subject: document.getElementById("subject").value.trim(),
-        topic: document.getElementById("topic").value.trim(),
-        Date: document.getElementById("date").value.trim(),
-        duration: Number(document.getElementById("duration").value.trim()),
-        priority: document.getElementById("priority").value.trim(),
-    };
-    const result = await apiRequest(
-        "/api/tasks",
-        {method: "POST",
-        headers: {
-            "Content-Type": "application/json" },
-        body: JSON.stringify(newTask)}
-    );
 
-    if (!result.ok) {
-        showMessage(result.data.message || "Unable to create task.", "error");
+    const course = courses.find((item) => item.code === courseSelect.value);
+    if (!course || selectedCourses.some((item) => item.code === course.code)) {
+        statusMessage.textContent = "Choose an available course before adding it.";
         return;
     }
-    classForm.reset();
-    showMessage(result.data.message, "success");
 
-    await refreshDashboard();
-});
-clearButton.addEventListener("click", async function () {
-    const result = await apiRequest("/api/tasks", {
-        method: "DELETE"
-    });
-    if (!result.ok) {
-        showMessage(result.data.message || "Unable to delete task.", "error");
+    if (selectedCourses.length >= maxCourses) {
+        statusMessage.textContent = "You can register for no more than five courses.";
+        render();
         return;
     }
-    showMessage(result.data.message, "success");
-    await refreshDashboard();
+
+    selectedCourses.push(course);
+    statusMessage.textContent = `${course.code} added to your schedule.`;
+    render();
 });
 
-refreshButton.addEventListener("click", refreshDashboard);
-clearLogButton.addEventListener("click", function () {
-    apiLog.innerHTML = "";
-});
-async function apiRequest(url, options = {}) {
-    const method = options.method || "GET";
-    const startedAt = performance.now();
-    try {
-        const response = await fetch(url, options);
-        const data = await response.json();
-        const duration = Math.round(performance.now() - startedAt);
-
-        addLogEntry(
-            method,
-            url,
-            response.status,
-            duration,
-            response.ok
-        );
-        return {
-            ok: response.ok,
-            status: response.status,
-            data
-        };
-    } catch (error) {
-        const duration = Math.round(performance.now() - startedAt);
-        addLogEntry(
-            method,
-            url,
-            "OFFLINE",
-            duration,
-            false);
-        return {
-            ok: false,
-            status: 0,
-            data: {
-                message: "The Express backend is not reachable."
-            }
-        };
-    }
-}
-async function checkServerStatus() {
-    const result = await apiRequest("/api/status");
-    if (!result.ok) {
-        serverStatus.textContent = "Server Offline";
-        serverDetails.textContent = "Start the Express server with npm start.";
-        statusDot.className = "status-dot offline";
-        return false;
-    }
-
-    if (serverStatus) serverStatus.textContent = "Express Server Online";
-    if (serverDetails) {
-        serverDetails.textContent =
-            `${result.data.server} on port ${result.data.port} ` +
-            new Date(result.data.timestamp).toLocaleTimeString();
-    }
-    if (statusDot) statusDot.className = "status-dot online";
-    return true;
-}
-
-async function loadStatistics() {//NO of request and the responses that go  between the server and the host
-    const result = await apiRequest("/api/statistics");//
-    if (!result.ok) {
-        return;
-    }
-    totalTask.textContent = result.data.totalTasks;
-    completedTasks.textContent = result.data.completedTasks;
-    pendingTasks.textContent = result.data.pendingTasks;
-}
-async function loadTasks() {
-    const result = await apiRequest("/api/tasks");
-
-    if (!result.ok) {
-        taskList.innerHTML = `
-        <div class = "empty-state">
-            Backend unavailable. Start the server and refresh.
-        </div>
-        `;
-        return;
-    }
-
-    displayTasks(result.data);
-}
-
-function displayTasks(tasks) {
-    taskList.innerHTML = "";
-
-    if (tasks.length === 0) {
-        taskList.innerHTML = `
-            <div class="empty-state">
-                No tasks are currently stored on the server.
-            </div>
-        `;
-        return;
-    }
-    tasks.forEach(function (task) {
-        const article = document.createElement("article");
-        article.className = task.completed
-            ? "task-card completed"
-            : "task-card";
-        article.innerHTML = `
-            <h4>${escapeHtml(task.subject)}</h4>
-            <p><strong>Topic:</strong> ${escapeHtml(task.topic)}</p>
-            <p><strong>Date:</strong> ${formatDate(task.Date)}</p>
-            <p><strong>Duration:</strong> ${task.duration} minutes</p>
-            <p><strong>Priority:</strong> ${escapeHtml(task.priority)}</p>
-            <p><strong>Status:</strong> ${task.completed ? "Completed" : "Pending"}</p>
-            
-            <div class="task-actions">
-                <button 
-                    class="task-button complete-button" 
-                    onclick="toggleTask(${task.id})"
-                >
-                    ${task.completed ? "Mark Pending" : "Mark Complete"}
-                </button>
-                
-                <button 
-                    class="task-button delete-button" 
-                    onclick="deleteTask(${task.id})"
-                >
-                    Delete
-                </button>
-            </div>
-        `;
-        taskList.appendChild(article);
-    });
-}
-async function toggleTask(taskId) {
-    const result = await apiRequest(
-        `/api/task/${taskId}`,
-        {
-            method: "PATCH"
-            }
-        );
-    if (!result.ok) {
-        showMessage(result.data.message || "Unable to update task.", "error");
-        return;
-    }
-    showMessage(result.data.message, "success");
-    await refreshDashboard();
-}
-
-async function deleteTask(taskId) {
-    const result = await apiRequest(
-        `/api/task/${taskId}`,
-        {
-            method: "DELETE"
-            }
-        );
-
-        if (!result.ok) {
-            showMessage(result.data.message || "Unable to delete task.", "error");
-            return;
-    }
-    showMessage(result.data.message, "success");
-    await refreshDashboard();
-}
-
-async function refreshDashboard() {
-    const isOnline = await checkServerStatus();
-
-
-    if (!isOnline) {
-        return;
-    }
-
-    await Promise.all([
-        loadStatistics(),
-        loadTasks()
-    ]);
-}
-function addLogEntry(method, url, status, duration, success) { //
-    if (!apiLog) return;
-    const entry = document.createElement("div");
-    entry.className = "log-entry";
-
-    const time = new Date().toLocaleTimeString();
-    entry.innerHTML = `
-        <span class="log-time">${time}</span>
-        <strong>${method}</strong>
-        <span>${url}</span>
-        <span class="log-status ${success ? "success" : "error"}">
-            ${status} * ${duration}ms
-        </span>
-    `;
-    apiLog.prepend(entry);
-}
-
-function showMessage(text, type) {
-    if (!message) return;
-    message.textContent = text;
-    message.className = `message ${type}`;
-
-    setTimeout(function () {
-        message.textContent = "";
-        message.className = "message";
-    }, 3000);
-}
-
-function formatDate(dateText) {
-    if (!dateText) return "";
-    const date = new Date(`${dateText}T00:00:00`);
-    return date.toLocaleDateString();
-}
-
-function escapeHtml(value) {
-    return value
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-}
-
-refreshDashboard();
+render();
