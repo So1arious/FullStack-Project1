@@ -239,19 +239,19 @@ select:disabled {
 
 .course-code {
     color: var(--red);
-    font-size: 10px;
+    font-size: 14px;
     font-weight: 700;
     white-space: nowrap;
 }
 
 .course-name {
     color: #35435a;
-    font-size: 12px;
+    font-size: 16px;
 }
 
 .course-credits {
     color: #78859a;
-    font-size: 10px;
+    font-size: 14px;
     white-space: nowrap;
 }
 
@@ -293,7 +293,7 @@ select:disabled {
 
 .selected-courses {
     display: grid;
-    gap: 9px;
+    gap: 14px;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -304,28 +304,28 @@ select:disabled {
     grid-template-columns: minmax(0, 1fr) auto auto;
     align-items: center;
     gap: 9px;
-    padding: 11px 10px;
+    padding: 16px 12px;
     border: 1px solid var(--line);
     border-radius: 8px;
 }
 
 .selected-course-details {
     display: grid;
-    gap: 3px;
+    gap: 10px;
     min-width: 0;
 }
 
 .selected-course-title {
     overflow: hidden;
     color: #35435a;
-    font-size: 11px;
+    font-size: 14px;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
 .selected-course-credits {
     color: var(--muted);
-    font-size: 10px;
+    font-size: 12px;
     white-space: nowrap;
 }
 
@@ -335,7 +335,7 @@ select:disabled {
     background: transparent;
     color: #718096;
     cursor: pointer;
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .remove-button:hover {
