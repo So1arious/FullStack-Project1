@@ -15,7 +15,7 @@ const courses = [
     { code: "MUS 201", title: "Music Theory II", credits: 3}
 ];
 //Changes from maxCourses to maxCredits seting to 19 as max
-const maxCredits = 5;
+const MaxCredits = 19;
 const selectedCourses = [];
 const form = document.querySelector("#course-form");
 const courseSelect = document.querySelector("#course-select");
@@ -32,8 +32,8 @@ function render() {
     const selectedCodes = new Set(selectedCourses.map((course) => course.code));
     const availableCourses = courses.filter((course) => !selectedCodes.has(course.code));
     // Made changes to count the total of credits
-    const count = selectedCourse.reduce((sum, course) => sum + course.credits, 0);
-    const atCapacity = count >= maxCourses;
+    const count = selectedCourses.reduce((sum, course) => sum + course.credits, 0);
+    const atCapacity = count >= MaxCredits;
 
     courseSelect.replaceChildren(new Option("Choose a course", ""));
     availableCourses.forEach((course) => {
@@ -42,12 +42,12 @@ function render() {
     //made changes maxCourses to maxCredits
     courseSelect.disabled = atCapacity || availableCourses.length === 0;
     addButton.disabled = courseSelect.disabled;
-    counter.textContent = `${count} / ${maxCredits}`;
-    progressFill.style.width = `${(count / maxCredits) * 100}%`;
-    progressFill.parentElement.setAttribute("aria-label", `${count} of ${maxCredits} courses selected`);
+    counter.textContent = `${count} / ${MaxCredits}`;
+    progressFill.style.width = `${(count / MaxCredits) * 100}%`;
+    progressFill.parentElement.setAttribute("aria-label", `${count} of ${MaxCredits} courses selected`);
     summary.textContent = atCapacity
         ? "Your schedule has reached or is over the 19 credits limit."
-        : `${maxCredits - count} ${maxCredits - count === 1 ? "credits" : "credits"} remaining`;
+        : `${MaxCredits - count} ${MaxCredits - count === 1 ? "credits" : "credits"} remaining`;
     emptyState.hidden = count > 0;
     selectedList.replaceChildren();
 
@@ -81,7 +81,7 @@ function render() {
     });
 
     const credits = selectedCourses.reduce((sum, course) => sum + course.credits, 0);
-    totalCredits.textContent = `${count} ${count === 1 ? "code" : "code"}`;
+    totalCredits.textContent = `${count} ${count === 1 ? "credits" : "credits"}`;
 }
 
 function removeCourse(code) {
