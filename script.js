@@ -1,8 +1,8 @@
 const courses = [
     { code: "CS 101", title: "Introduction to Computer Science", credits: 3 },
     { code: "CS 298", title: "Intro to Full Stack", credits: 3},
-    { code : "CS 300", title: "Intensive Programming", credits: 3},
-    { code : "MATH 101",title: "Calculus I", credits: 4 },
+    { code: "CS 300", title: "Intensive Programming", credits: 3},
+    { code: "MATH 101", title: "Calculus I", credits: 4 },
     { code: "MATH 201", title: "Calculus II", credits: 4 },
     { code: "MATH 301", title: "Calculus III", credits: 4},
     { code: "ENG 110", title: "Writing and Rhetoric", credits: 3 },
@@ -14,8 +14,8 @@ const courses = [
     { code: "MUS 101", title: "Music Theory I", credits: 3},
     { code: "MUS 201", title: "Music Theory II", credits: 3}
 ];
-
-const maxCourses = 5;
+//Changes from maxCourses to maxCredits seting to 19 as max
+const maxCredits = 5;
 const selectedCourses = [];
 const form = document.querySelector("#course-form");
 const courseSelect = document.querySelector("#course-select");
@@ -31,22 +31,23 @@ const totalCredits = document.querySelector("#total-credits");
 function render() {
     const selectedCodes = new Set(selectedCourses.map((course) => course.code));
     const availableCourses = courses.filter((course) => !selectedCodes.has(course.code));
-    const count = selectedCourses.length;
+    // Made changes to count the total of credits
+    const count = selectedCourse.reduce((sum, course) => sum + course.credits, 0);
     const atCapacity = count >= maxCourses;
 
     courseSelect.replaceChildren(new Option("Choose a course", ""));
     availableCourses.forEach((course) => {
         courseSelect.add(new Option(`${course.code} — ${course.title} (${course.credits} credits)`, course.code));
     });
-
+    //made changes maxCourses to maxCredits
     courseSelect.disabled = atCapacity || availableCourses.length === 0;
     addButton.disabled = courseSelect.disabled;
-    counter.textContent = `${count} / ${maxCourses}`;
-    progressFill.style.width = `${(count / maxCourses) * 100}%`;
-    progressFill.parentElement.setAttribute("aria-label", `${count} of ${maxCourses} courses selected`);
+    counter.textContent = `${count} / ${maxCredits}`;
+    progressFill.style.width = `${(count / maxCredits) * 100}%`;
+    progressFill.parentElement.setAttribute("aria-label", `${count} of ${maxCredits} courses selected`);
     summary.textContent = atCapacity
-        ? "Your schedule has reached the five-course limit."
-        : `${maxCourses - count} ${maxCourses - count === 1 ? "course" : "courses"} remaining`;
+        ? "Your schedule has reached or is over the 19 credits limit."
+        : `${maxCredits - count} ${maxCredits - count === 1 ? "credits" : "credits"} remaining`;
     emptyState.hidden = count > 0;
     selectedList.replaceChildren();
 
@@ -80,7 +81,7 @@ function render() {
     });
 
     const credits = selectedCourses.reduce((sum, course) => sum + course.credits, 0);
-    totalCredits.textContent = `${credits} ${credits === 1 ? "credit" : "credits"}`;
+    totalCredits.textContent = `${count} ${count === 1 ? "code" : "code"}`;
 }
 
 function removeCourse(code) {
@@ -100,9 +101,11 @@ form.addEventListener("submit", (event) => {
         statusMessage.textContent = "Choose an available course before adding it.";
         return;
     }
-
-    if (selectedCourses.length >= maxCourses) {
-        statusMessage.textContent = "You can register for no more than five courses.";
+    //This code is added to accumulate course credits 
+    const currentCredits = selectedCourses.reduce((sum, course) => sum + course.credits, 0);
+    //Chanages to maxCourses to MaxCredits and selectedCourses.length to currentCredits
+    if (currentCredits + course.credits > MaxCredits) {
+        statusMessage.textContent = "You can register for no more than nineteen credit.";
         render();
         return;
     }
